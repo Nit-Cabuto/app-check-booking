@@ -256,56 +256,106 @@
             );
 
 
-            // ตัวอย่าง Output
-            //
-            // {
-            //     "lineUserId": "Uxxxxxxxxxxxxxxxx",
-            //     "bookingNos": [
-            //         "6500077930",
-            //         "6500077970",
-            //         "6500863830"
-            //     ]
-            // }
-
-
             // ==================================
-            // TODO:
-            // เรียก .NET 8 API ตรงนี้
+            // แสดง Loading
             // ==================================
+            document
+                .getElementById("loading")
+                .style.display = "block";
 
-            /*
-            fetch(
-                "https://your-api.com/api/booking/check-status",
-                {
-                    method: "POST",
+            document
+                .getElementById("btnCheck")
+                .disabled = true;
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
 
-                    body: JSON.stringify(
-                        requestData
-                    )
+            try {
+
+                // ==================================
+                // ส่งข้อความกลับ LINE
+                // ==================================
+
+                if (liff.isInClient()) {
+
+                    await liff.sendMessages([
+                        {
+                            type: "text",
+                            text: "ตรวจสอบข้อมูลสักครู่"
+                        }
+                    ]);
+
+                    console.log(
+                        "LINE message sent."
+                    );
+
                 }
-            )
-            .then(response => response.json())
-            .then(data => {
+
+
+                // ==================================
+                // เรียก .NET 8 API
+                // ==================================
+
+                /*
+                const response = await fetch(
+                    "https://your-api.com/api/booking/check-status",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify(
+                            requestData
+                        )
+                    }
+                );
+
+
+                const result =
+                    await response.json();
+
 
                 console.log(
                     "API Response:",
-                    data
+                    result
                 );
+                */
 
-            })
-            .catch(error => {
+
+                // ==================================
+                // ปิด LIFF
+                // ==================================
+
+                if (liff.isInClient()) {
+
+                    liff.closeWindow();
+
+                }
+
+            }
+            catch (error) {
 
                 console.error(
-                    "API Error:",
+                    "Error:",
                     error
                 );
 
-            });
-            */
+                alert(
+                    "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
+                );
+
+            }
+            finally {
+
+                document
+                    .getElementById("loading")
+                    .style.display = "none";
+
+                document
+                    .getElementById("btnCheck")
+                    .disabled = false;
+
+            }
 
         });
 
