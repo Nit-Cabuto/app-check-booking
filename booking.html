@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Check Status Booking</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f5f7fa;
+        }
+
+        .booking-card {
+            max-width: 600px;
+            margin: 40px auto;
+            border: 0;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .booking-card .card-header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #eeeeee;
+            padding: 24px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .booking-card .card-body {
+            padding: 24px;
+        }
+
+        #bookingNo {
+            min-height: 180px;
+            resize: vertical;
+        }
+
+        .btn-check-booking {
+            height: 50px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="card booking-card">
+
+        <div class="card-header text-center">
+            <h3 class="mb-1">
+                Check Status Booking
+            </h3>
+
+            <small class="text-muted">
+                ตรวจสอบสถานะ Booking
+            </small>
+        </div>
+
+        <div class="card-body">
+
+            <div class="mb-3">
+
+                <label for="bookingNo"
+                       class="form-label fw-bold">
+                    Booking No.
+                </label>
+
+                <textarea
+                    id="bookingNo"
+                    class="form-control"
+                    placeholder="กรอก Booking No.&#10;ตัวอย่าง&#10;6500077930&#10;6500077970&#10;6500863830"></textarea>
+
+                <div class="form-text">
+                    สามารถกรอก Booking ได้หลายรายการ โดยแยกแต่ละรายการด้วยการขึ้นบรรทัดใหม่
+                </div>
+
+            </div>
+
+            <!-- LINE User ID -->
+            <input type="hidden"
+                   id="lineUserId"
+                   name="lineUserId">
+
+            <button
+                type="button"
+                id="btnCheck"
+                class="btn btn-primary w-100 btn-check-booking">
+
+                Check Booking
+
+            </button>
+
+            <div class="loading text-center mt-3"
+                 id="loading">
+
+                <div class="spinner-border spinner-border-sm"
+                     role="status">
+                </div>
+
+                <span class="ms-2">
+                    กำลังตรวจสอบข้อมูล...
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- LIFF SDK -->
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<script>
+
+    // ==========================================
+    // ตั้งค่า LIFF ID
+    // ==========================================
+
+    const LIFF_ID = "2011783111-auejvVTq";
+
+
+    // ==========================================
+    // Initial LIFF
+    // ==========================================
+
+    async function initializeLiff() {
+
+        try {
+
+            await liff.init({
+                liffId: LIFF_ID
+            });
+
+
+            // ถ้ายังไม่ได้ Login
+            if (!liff.isLoggedIn()) {
+
+                liff.login();
+
+                return;
+            }
+
+
+            // ==================================
+            // Get LINE Profile
+            // ==================================
+
+            const profile = await liff.getProfile();
+
+
+            console.log("LINE Profile", profile);
+
+
+            // เก็บ LINE User ID
+            document.getElementById("lineUserId").value =
+                profile.userId;
+
+
+            console.log(
+                "LINE User ID:",
+                profile.userId
+            );
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "LIFF Initialize Error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    // ==========================================
+    // Check Booking
+    // ==========================================
+
+    document
+        .getElementById("btnCheck")
+        .addEventListener("click", function () {
+
+
+            const bookingText =
+                document
+                    .getElementById("bookingNo")
+                    .value
+                    .trim();
+
+
+            const lineUserId =
+                document
+                    .getElementById("lineUserId")
+                    .value;
+
+
+            // ==================================
+            // Validate
+            // ==================================
+
+            if (!bookingText) {
+
+                alert(
+                    "กรุณากรอก Booking No."
+                );
+
+                return;
+            }
+
+
+            // ==================================
+            // แยก Booking ตามบรรทัด
+            // ==================================
+
+            const bookingNos =
+                bookingText
+                    .split(/\r?\n/)
+                    .map(x => x.trim())
+                    .filter(x => x !== "");
+
+
+            // ==================================
+            // Data สำหรับส่ง API
+            // ==================================
+
+            const requestData = {
+
+                lineUserId: lineUserId,
+
+                bookingNos: bookingNos
+
+            };
+
+
+            console.log(
+                "Request:",
+                requestData
+            );
+
+
+            // ตัวอย่าง Output
+            //
+            // {
+            //     "lineUserId": "Uxxxxxxxxxxxxxxxx",
+            //     "bookingNos": [
+            //         "6500077930",
+            //         "6500077970",
+            //         "6500863830"
+            //     ]
+            // }
+
+
+            // ==================================
+            // TODO:
+            // เรียก .NET 8 API ตรงนี้
+            // ==================================
+
+            /*
+            fetch(
+                "https://your-api.com/api/booking/check-status",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(
+                        requestData
+                    )
+                }
+            )
+            .then(response => response.json())
+            .then(data => {
+
+                console.log(
+                    "API Response:",
+                    data
+                );
+
+            })
+            .catch(error => {
+
+                console.error(
+                    "API Error:",
+                    error
+                );
+
+            });
+            */
+
+        });
+
+
+    // ==========================================
+    // Start
+    // ==========================================
+
+    initializeLiff();
+
+</script>
+
+</body>
+</html>
