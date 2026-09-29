@@ -122,22 +122,15 @@
 </div>
 
 
-<!-- LIFF SDK -->
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
 <script>
 
-    // ==========================================
-    // ตั้งค่า LIFF ID
-    // ==========================================
-
     const LIFF_ID = "2011783111-auejvVTq";
 
-
     // ==========================================
-    // Initial LIFF
+    // Initialize LIFF
     // ==========================================
-
     async function initializeLiff() {
 
         try {
@@ -146,36 +139,20 @@
                 liffId: LIFF_ID
             });
 
-
-            // ถ้ายังไม่ได้ Login
             if (!liff.isLoggedIn()) {
 
                 liff.login();
-
                 return;
             }
 
-
-            // ==================================
             // Get LINE Profile
-            // ==================================
-
             const profile = await liff.getProfile();
 
-
-            console.log("LINE Profile", profile);
-
+            console.log("LINE Profile:", profile);
 
             // เก็บ LINE User ID
             document.getElementById("lineUserId").value =
                 profile.userId;
-
-
-            console.log(
-                "LINE User ID:",
-                profile.userId
-            );
-
 
         }
         catch (error) {
@@ -193,18 +170,15 @@
     // ==========================================
     // Check Booking
     // ==========================================
-
     document
         .getElementById("btnCheck")
-        .addEventListener("click", function () {
-
+        .addEventListener("click", async function () {
 
             const bookingText =
                 document
                     .getElementById("bookingNo")
                     .value
                     .trim();
-
 
             const lineUserId =
                 document
@@ -215,12 +189,9 @@
             // ==================================
             // Validate
             // ==================================
-
             if (!bookingText) {
 
-                alert(
-                    "กรุณากรอก Booking No."
-                );
+                alert("กรุณากรอก Booking No.");
 
                 return;
             }
@@ -229,17 +200,12 @@
             // ==================================
             // แยก Booking ตามบรรทัด
             // ==================================
-
             const bookingNos =
                 bookingText
                     .split(/\r?\n/)
                     .map(x => x.trim())
                     .filter(x => x !== "");
 
-
-            // ==================================
-            // Data สำหรับส่ง API
-            // ==================================
 
             const requestData = {
 
@@ -276,7 +242,7 @@
 
                 if (liff.isInClient()) {
 
-                    liff.sendMessages([
+                    await liff.sendMessages([
                         {
                             type: "text",
                             text: "ตรวจสอบข้อมูลสักครู่"
@@ -361,7 +327,7 @@
 
 
     // ==========================================
-    // Start
+    // Start LIFF
     // ==========================================
 
     initializeLiff();
