@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KLN SEAPORT</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <!-- <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+        }
+        .logo {
+            max-width: 200px;
+            max-height: 200px;
+        }
+    </style> -->
+</head>
+<body>
+    
+    <div class="container">
+        <img src="./img/logo.png" alt="Logo" class="logo">
+    </div>
+
+    <!-- <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/versions/2.22.3/sdk.js"></script> -->
+    <script charset="utf-8" src="./js/scrips.js"></script>
+    
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://malsup.github.io/jquery.blockUI.js"></script> -->
+
+    <script>
+        
+        const liffId = "2011783111-auejvVTq"; // -- log in extract slip
+        //const tokenSlip = "81cae111-e8de-4266-b21c-1aa364d0ecfb";
+
+        main();
+
+        async function main() {
+            await liff.init({ liffId: liffId }, function () {
+                liff.ready.then(async () => {
+
+                    console.log('LIFF Started');
+
+                    //-- check liff in client mobile or web
+                    if (liff.isInClient()) {
+
+                        console.log('LIFF in LINE Client Mobile');
+
+                        if (!liff.isLoggedIn()) {
+                            liff.login({
+                                redirectUri: "booking.html"
+                            });
+
+                        } else {
+                            //const profile = await liff.getProfile();
+
+                            //console.log('User profile:', profile);
+
+                            console.log('User logged in');
+
+                            sessionStorage.setItem("liffId", liffId);
+                            window.location.replace(`booking.html`);
+                        }
+                    } else {
+
+                        console.log('LIFF not in LINE Client');
+
+                        // sessionStorage.setItem("liffId", liffId);
+                        // window.location.replace(`upload.html`);
+
+                        // var context = liff.getContext();
+                        // console.log(context);
+
+                        liff.logout();
+                        console.log('User logged out');
+
+                        //return;
+                    }
+                }).catch((err) => {
+                    console.error('LIFF initialization failed ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

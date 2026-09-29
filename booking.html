@@ -126,7 +126,8 @@
 
 <script>
 
-    const LIFF_ID = "2011783111-auejvVTq";
+    //const LIFF_ID = "2011783111-auejvVTq";
+    const LIFF_ID = sessionStorage.getItem("liffId");
 
     // ==========================================
     // Initialize LIFF
@@ -161,9 +162,7 @@
                 "LIFF Initialize Error:",
                 error
             );
-
         }
-
     }
 
 
