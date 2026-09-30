@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Check Status Booking</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
@@ -54,64 +53,56 @@
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <div class="card booking-card">
+        <div class="card booking-card">
 
-        <div class="card-header text-center">
-            <h3 class="mb-1">
-                Check Status Booking
-            </h3>
+            <div class="card-header text-center">
+                <h3 class="mb-1">
+                    Check Status Booking
+                </h3>
 
-            <small class="text-muted">
-                ตรวจสอบสถานะ Booking
-            </small>
-        </div>
-
-        <div class="card-body">
-
-            <div class="mb-3">
-
-                <label for="bookingNo"
-                       class="form-label fw-bold">
-                    Booking No.
-                </label>
-
-                <textarea
-                    id="bookingNo"
-                    class="form-control"
-                    placeholder="กรอก Booking No.&#10;ตัวอย่าง&#10;6500077930&#10;6500077970&#10;6500863830"></textarea>
-
-                <div class="form-text">
-                    สามารถกรอก Booking ได้หลายรายการ โดยแยกแต่ละรายการด้วยการขึ้นบรรทัดใหม่
-                </div>
-
+                <small class="text-muted">
+                    ตรวจสอบสถานะ Booking
+                </small>
             </div>
 
-            <!-- LINE User ID -->
-            <input type="hidden"
-                   id="lineUserId"
-                   name="lineUserId">
+            <div class="card-body">
 
-            <button
-                type="button"
-                id="btnCheck"
-                class="btn btn-primary w-100 btn-check-booking">
+                <div class="mb-3">
 
-                Check Booking
+                    <label for="bookingNo" class="form-label fw-bold">
+                        Booking No.
+                    </label>
 
-            </button>
+                    <textarea id="bookingNo" class="form-control"
+                        placeholder="กรอก Booking No.&#10;ตัวอย่าง&#10;6500077930&#10;6500077970&#10;6500863830"></textarea>
 
-            <div class="loading text-center mt-3"
-                 id="loading">
+                    <div class="form-text">
+                        สามารถกรอก Booking ได้หลายรายการ โดยแยกแต่ละรายการด้วยการขึ้นบรรทัดใหม่
+                    </div>
 
-                <div class="spinner-border spinner-border-sm"
-                     role="status">
                 </div>
 
-                <span class="ms-2">
-                    กำลังตรวจสอบข้อมูล...
-                </span>
+                <!-- LINE User ID -->
+                <input type="hidden" id="lineUserId" name="lineUserId">
+
+                <button type="button" id="btnCheck" class="btn btn-primary w-100 btn-check-booking">
+
+                    Check Booking
+
+                </button>
+
+                <div class="loading text-center mt-3" id="loading">
+
+                    <div class="spinner-border spinner-border-sm" role="status">
+                    </div>
+
+                    <span class="ms-2">
+                        กำลังตรวจสอบข้อมูล...
+                    </span>
+
+                </div>
 
             </div>
 
@@ -119,219 +110,281 @@
 
     </div>
 
-</div>
 
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script>
 
-<script>
+        //const LIFF_ID = "2011783111-auejvVTq";
+        const LIFF_ID = sessionStorage.getItem("liffId");
 
-    //const LIFF_ID = "2011783111-auejvVTq";
-    const LIFF_ID = sessionStorage.getItem("liffId");
-
-    // ==========================================
-    // Initialize LIFF
-    // ==========================================
-    async function initializeLiff() {
-
-        try {
-
-            await liff.init({
-                liffId: LIFF_ID
-            });
-
-            if (!liff.isLoggedIn()) {
-
-                liff.login();
-                return;
-            }
-
-            // Get LINE Profile
-            const profile = await liff.getProfile();
-
-            console.log("LINE Profile:", profile);
-
-            // เก็บ LINE User ID
-            document.getElementById("lineUserId").value =
-                profile.userId;
-
-        }
-        catch (error) {
-
-            console.error(
-                "LIFF Initialize Error:",
-                error
-            );
-        }
-    }
-
-
-    // ==========================================
-    // Check Booking
-    // ==========================================
-    document
-        .getElementById("btnCheck")
-        .addEventListener("click", async function () {
-
-            const bookingText =
-                document
-                    .getElementById("bookingNo")
-                    .value
-                    .trim();
-
-            const lineUserId =
-                document
-                    .getElementById("lineUserId")
-                    .value;
-
-
-            // ==================================
-            // Validate
-            // ==================================
-            if (!bookingText) {
-
-                alert("กรุณากรอก Booking No.");
-
-                return;
-            }
-
-
-            // ==================================
-            // แยก Booking ตามบรรทัด
-            // ==================================
-            const bookingNos =
-                bookingText
-                    .split(/\r?\n/)
-                    .map(x => x.trim())
-                    .filter(x => x !== "");
-
-
-            const requestData = {
-
-                lineUserId: lineUserId,
-
-                bookingNos: bookingNos
-
-            };
-
-
-            console.log(
-                "Request:",
-                requestData
-            );
-
-
-            // ==================================
-            // แสดง Loading
-            // ==================================
-            document
-                .getElementById("loading")
-                .style.display = "block";
-
-            document
-                .getElementById("btnCheck")
-                .disabled = true;
-
+        // ==========================================
+        // Initialize LIFF
+        // ==========================================
+        async function initializeLiff() {
 
             try {
 
-                // ==================================
-                // ส่งข้อความกลับ LINE
-                // ==================================
+                await liff.init({
+                    liffId: LIFF_ID
+                });
 
-                if (liff.isInClient()) {
+                if (!liff.isLoggedIn()) {
 
-                    await liff.sendMessages([
-                        {
-                            type: "text",
-                            text: "ตรวจสอบข้อมูลสักครู่"
-                        }
-                    ]);
-
-                    console.log(
-                        "LINE message sent."
-                    );
-
+                    liff.login();
+                    return;
                 }
 
+                // Get LINE Profile
+                const profile = await liff.getProfile();
 
-                // ==================================
-                // เรียก .NET 8 API
-                // ==================================
+                console.log("LINE Profile:", profile);
 
-                /*
-                const response = await fetch(
-                    "https://your-api.com/api/booking/check-status",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-
-                        body: JSON.stringify(
-                            requestData
-                        )
-                    }
-                );
-
-
-                const result =
-                    await response.json();
-
-
-                console.log(
-                    "API Response:",
-                    result
-                );
-                */
-
-
-                // ==================================
-                // ปิด LIFF
-                // ==================================
-
-                if (liff.isInClient()) {
-
-                    liff.closeWindow();
-
-                }
+                // เก็บ LINE User ID
+                document.getElementById("lineUserId").value =
+                    profile.userId;
 
             }
             catch (error) {
 
                 console.error(
-                    "Error:",
+                    "LIFF Initialize Error:",
                     error
                 );
+            }
+        }
 
-                alert(
-                    "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
+
+        // ==========================================
+        // Check Booking
+        // ==========================================
+        document
+            .getElementById("btnCheck")
+            .addEventListener("click", async function () {
+
+                const bookingText =
+                    document
+                        .getElementById("bookingNo")
+                        .value
+                        .trim();
+
+                const lineUserId =
+                    document
+                        .getElementById("lineUserId")
+                        .value;
+
+
+                // ==================================
+                // Validate
+                // ==================================
+                if (!bookingText) {
+
+                    alert("กรุณากรอก Booking No.");
+
+                    return;
+                }
+
+
+                // ==================================
+                // แยก Booking ตามบรรทัด
+                // ==================================
+                const bookingNos =
+                    bookingText
+                        .split(/\r?\n/)
+                        .map(x => x.trim())
+                        .filter(x => x !== "");
+
+
+                const requestData = {
+
+                    lineUserId: lineUserId,
+
+                    bookingNos: bookingNos
+
+                };
+
+
+                console.log(
+                    "Request:",
+                    requestData
                 );
 
-            }
-            finally {
 
+                // ==================================
+                // แสดง Loading
+                // ==================================
                 document
                     .getElementById("loading")
-                    .style.display = "none";
+                    .style.display = "block";
 
                 document
                     .getElementById("btnCheck")
-                    .disabled = false;
-
-            }
-
-        });
+                    .disabled = true;
 
 
-    // ==========================================
-    // Start LIFF
-    // ==========================================
+                try {
 
-    initializeLiff();
+                    // ==================================
+                    // ส่งข้อความกลับ LINE
+                    // ==================================
 
-</script>
+                    if (liff.isInClient()) {
+
+                        const flexMessage = {
+                            type: "flex",
+                            altText: "ผลการตรวจสอบ Booking",
+                            contents: {
+                                type: "bubble",
+                                header: {
+                                    type: "box",
+                                    layout: "vertical",
+                                    contents: [
+                                        {
+                                            type: "text",
+                                            text: "Check Booking",
+                                            weight: "bold",
+                                            size: "xl"
+                                        }
+                                    ]
+                                },
+                                body: {
+                                    type: "box",
+                                    layout: "vertical",
+                                    spacing: "md",
+                                    contents: [
+                                        {
+                                            type: "text",
+                                            text: "Booking No.",
+                                            size: "sm",
+                                            color: "#888888"
+                                        },
+                                        {
+                                            type: "text",
+                                            text: "6500077930",
+                                            weight: "bold",
+                                            size: "lg"
+                                        },
+                                        {
+                                            type: "separator",
+                                            margin: "md"
+                                        },
+                                        {
+                                            type: "box",
+                                            layout: "horizontal",
+                                            margin: "md",
+                                            contents: [
+                                                {
+                                                    type: "text",
+                                                    text: "Status",
+                                                    color: "#888888",
+                                                    flex: 2
+                                                },
+                                                {
+                                                    type: "text",
+                                                    text: "ติดต่อแล้ว",
+                                                    weight: "bold",
+                                                    align: "end",
+                                                    flex: 3
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        };
+
+                        await liff.sendMessages([
+                            {
+                                type: "text",
+                                text: "ตรวจสอบข้อมูลสักครู่"
+                            }
+                        ]);
+
+                        console.log(
+                            "LINE message sent."
+                        );
+
+                    }
+
+
+                    // ==================================
+                    // เรียก .NET 8 API
+                    // ==================================
+
+                    /*
+                    const response = await fetch(
+                        "https://your-api.com/api/booking/check-status",
+                        {
+                            method: "POST",
+    
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+    
+                            body: JSON.stringify(
+                                requestData
+                            )
+                        }
+                    );
+    
+    
+                    const result =
+                        await response.json();
+    
+    
+                    console.log(
+                        "API Response:",
+                        result
+                    );
+                    */
+
+
+                    // ==================================
+                    // ปิด LIFF
+                    // ==================================
+
+                    if (liff.isInClient()) {
+
+                        liff.closeWindow();
+
+                    }
+
+                }
+                catch (error) {
+
+                    console.error(
+                        "Error:",
+                        error
+                    );
+
+                    alert(
+                        "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
+                    );
+
+                }
+                finally {
+
+                    document
+                        .getElementById("loading")
+                        .style.display = "none";
+
+                    document
+                        .getElementById("btnCheck")
+                        .disabled = false;
+
+                }
+
+            });
+
+
+        // ==========================================
+        // Start LIFF
+        // ==========================================
+
+        initializeLiff();
+
+    </script>
 
 </body>
+
 </html>
