@@ -230,7 +230,7 @@
 
                     if (liff.isInClient()) {
 
-                        const flexMessage = {
+                        const flexMessages = {
                             type: "flex",
                             altText: "ผลการตรวจสอบ Booking",
                             contents: {
@@ -294,7 +294,7 @@
                         };
 
                         await liff.sendMessages([
-                            flexMessage()
+                            flexMessages()
                             // {
                             //     type: "text",
                             //     text: "ตรวจสอบข้อมูลสักครู่"
