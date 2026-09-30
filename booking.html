@@ -230,76 +230,76 @@
 
                     if (liff.isInClient()) {
 
-                        // const flexMessages = {
-                        //     type: "flex",
-                        //     altText: "ผลการตรวจสอบ Booking",
-                        //     contents: {
-                        //         type: "bubble",
-                        //         header: {
-                        //             type: "box",
-                        //             layout: "vertical",
-                        //             contents: [
-                        //                 {
-                        //                     type: "text",
-                        //                     text: "Check Booking",
-                        //                     weight: "bold",
-                        //                     size: "xl"
-                        //                 }
-                        //             ]
-                        //         },
-                        //         body: {
-                        //             type: "box",
-                        //             layout: "vertical",
-                        //             spacing: "md",
-                        //             contents: [
-                        //                 {
-                        //                     type: "text",
-                        //                     text: "Booking No.",
-                        //                     size: "sm",
-                        //                     color: "#888888"
-                        //                 },
-                        //                 {
-                        //                     type: "text",
-                        //                     text: "6500077930",
-                        //                     weight: "bold",
-                        //                     size: "lg"
-                        //                 },
-                        //                 {
-                        //                     type: "separator",
-                        //                     margin: "md"
-                        //                 },
-                        //                 {
-                        //                     type: "box",
-                        //                     layout: "horizontal",
-                        //                     margin: "md",
-                        //                     contents: [
-                        //                         {
-                        //                             type: "text",
-                        //                             text: "Status",
-                        //                             color: "#888888",
-                        //                             flex: 2
-                        //                         },
-                        //                         {
-                        //                             type: "text",
-                        //                             text: "ติดต่อแล้ว",
-                        //                             weight: "bold",
-                        //                             align: "end",
-                        //                             flex: 3
-                        //                         }
-                        //                     ]
-                        //                 }
-                        //             ]
-                        //         }
-                        //     }
-                        // };
+                        const flexMessages = {
+                            type: "flex",
+                            altText: "ผลการตรวจสอบ Booking",
+                            contents: {
+                                type: "bubble",
+                                header: {
+                                    type: "box",
+                                    layout: "vertical",
+                                    contents: [
+                                        {
+                                            type: "text",
+                                            text: "Check Booking",
+                                            weight: "bold",
+                                            size: "xl"
+                                        }
+                                    ]
+                                },
+                                body: {
+                                    type: "box",
+                                    layout: "vertical",
+                                    spacing: "md",
+                                    contents: [
+                                        {
+                                            type: "text",
+                                            text: "Booking No.",
+                                            size: "sm",
+                                            color: "#888888"
+                                        },
+                                        {
+                                            type: "text",
+                                            text: "6500077930",
+                                            weight: "bold",
+                                            size: "lg"
+                                        },
+                                        {
+                                            type: "separator",
+                                            margin: "md"
+                                        },
+                                        {
+                                            type: "box",
+                                            layout: "horizontal",
+                                            margin: "md",
+                                            contents: [
+                                                {
+                                                    type: "text",
+                                                    text: "Status",
+                                                    color: "#888888",
+                                                    flex: 2
+                                                },
+                                                {
+                                                    type: "text",
+                                                    text: "ติดต่อแล้ว",
+                                                    weight: "bold",
+                                                    align: "end",
+                                                    flex: 3
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        };
 
                         await liff.sendMessages([
-                            //flexMessages()
+                            flexMessages
 
-                            {
-                                type: "text",
-                                text: "ตรวจสอบข้อมูลสักครู่"
-                            }
+                            // {
+                            //     type: "text",
+                            //     text: "ตรวจสอบข้อมูลสักครู่"
+                            // }
                         ]);
 
                         console.log(
